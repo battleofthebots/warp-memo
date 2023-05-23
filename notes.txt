@@ -1,0 +1,12 @@
+SPace theme????
+
+* Ask them to create an account on the space status server
+* and they can view memos(randome)
+
+* Menu 
+
+1) create login
+2) login
+3) view memos
+4) delete account
+5) logout
