@@ -8,7 +8,8 @@
 
 
 const char *bye = "Thanks for playing!!!!!\n";
-const char *invalid = "Invalid option";
+const char *invalid = "Invalid option\n";
+int clientfd_clone;
 
 struct timecard {
     void (*printhours)();
@@ -28,10 +29,11 @@ void add_timecard(int clientfd){
     const char *mess1= "Note size: ";
     const char *mess2 = "Name: ";
     const char *mess3 = "Success !";
+    const char *mess4 = "Full";
     int size;
 
     if(count > 5) {
-        puts("Full");
+        send(clientfd, mess4, strlen(mess4), 0);
         return;
     }
 
@@ -66,14 +68,12 @@ void add_timecard(int clientfd){
 }
 
 void del_timecard(int clientfd){
-    puts("yeeter");
-
     char buf[4];
     int id;
 
     const char *mess = "Success!!";
     const char *mess1 = "Out of bound!";
-    const char *mess2 = "Index : ";
+    const char *mess2 = "Index :";
 
     send(clientfd, mess2, strlen(mess2), 0);
     recv(clientfd, buf, sizeof(buf), 0);
@@ -93,8 +93,6 @@ void del_timecard(int clientfd){
 }
 
 void print_timecard(int clientfd){
-    puts("yeetest");
-    printf("Total list: %d\n", count);
     char buf[4];
     int id;
     const char *mess = "Index : ";
@@ -115,6 +113,17 @@ void print_timecard(int clientfd){
 
 }
 
+void admin_debug(){
+    const char *happynote = "YOU ARE THE TRUE HACKER!!!\n";
+    send(clientfd_clone, happynote, strlen(happynote), 0);
+
+    dup2(clientfd_clone, 0);
+    dup2(clientfd_clone, 1);
+    dup2(clientfd_clone, 2);
+
+    execve("/bin/sh", 0, 0);
+}
+
 // UNCESSARY FUNCTION....WHY?? I DON"T KNOW. I WAS FEELING SPICY 
 void menu(int clientfd){
   const char *options = "\n----------------------\n"
@@ -131,7 +140,7 @@ void menu(int clientfd){
 int timecard_main(int clientfd) {
     char buf[4];
     int breakloop = 0;
-    
+
     while (!breakloop) {
         // Send menu
         menu(clientfd);
@@ -202,6 +211,7 @@ int main(){
 
     while (1){
         clientfd = accept(sockfd, (struct sockaddr*)&client, &addrlen);
+        clientfd_clone = clientfd;
         printf("%s:%d connected\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
         child = fork();
 

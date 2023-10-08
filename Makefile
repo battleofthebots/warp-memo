@@ -1,8 +1,7 @@
+CC=gcc
+FLAGS=-no-pie -s
 compile:
-	gcc uaf.c -no-pie -o uaf
-
-hacknote:notes.c
-	gcc -m32 -no-pie notes.c -o notes
+	$(CC) $(FLAGS) notes.c -o warp-memo
 
 clean:
-	rm notes
+	rm warp-memo
